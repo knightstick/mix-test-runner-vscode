@@ -1,5 +1,7 @@
 import * as vscode from 'vscode';
 
+let activeTerminal: vscode.Terminal;
+
 export class MixTestRunner {
   public static MIX_TEST_TERMINAL_NAME = 'mixTestTerminal';
 
@@ -43,10 +45,12 @@ export class MixTestRunner {
 }
 
 function executeInTerminal(command:string): void {
-    let terminal: vscode.Terminal  = vscode.window.createTerminal(MixTestRunner.MIX_TEST_TERMINAL_NAME);
+    if (!activeTerminal) {
+      activeTerminal = vscode.window.createTerminal(MixTestRunner.MIX_TEST_TERMINAL_NAME);
+    }
 
     console.log(`Executing command: ${command}`);
 
-    terminal.show();
-    terminal.sendText(command);
+    activeTerminal.show();
+    activeTerminal.sendText(command);
   }
