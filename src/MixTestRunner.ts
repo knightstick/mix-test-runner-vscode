@@ -3,22 +3,46 @@ import * as vscode from 'vscode';
 export class MixTestRunner {
   public static MIX_TEST_TERMINAL_NAME = 'mixTestTerminal';
 
-  constructor() {
-
+  file: vscode.TextDocument;
+  position?: vscode.Position;
+  constructor(file: vscode.TextDocument, position?: vscode.Position) {
+    this.file = file;
+    this.position = position;
   }
 
   public static runAllTests() {
-    vscode.window.showInformationMessage('Running all tests');
-    const runner = new MixTestRunner();
+    executeInTerminal(MixTestRunner.baseCommand());
+  }
 
-    runner.run();
+  protected static baseCommand(): string {
+    return 'mix test';
+  }
+
+  public static runTest(file: vscode.TextDocument, position?: vscode.Position) {
+    new MixTestRunner(file, position).run();
   }
 
   run() {
-    this.executeInTerminal('mix test');
+    executeInTerminal(this.command());
   }
 
-  executeInTerminal(command:string): void {
+  command(): string {
+    if (!this.position) { return this.fileCommand(); }
+
+    const lineNumber: number = this.position.line;
+
+    return `${this.fileCommand()}:${lineNumber}`;
+  }
+
+  fileCommand(): string {
+    const filePath: string = this.file.fileName;
+
+    return `${MixTestRunner.baseCommand()} ${filePath}`;
+  }
+
+}
+
+function executeInTerminal(command:string): void {
     let terminal: vscode.Terminal  = vscode.window.createTerminal(MixTestRunner.MIX_TEST_TERMINAL_NAME);
 
     console.log(`Executing command: ${command}`);
@@ -26,4 +50,3 @@ export class MixTestRunner {
     terminal.show();
     terminal.sendText(command);
   }
-}
