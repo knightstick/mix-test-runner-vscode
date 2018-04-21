@@ -10,7 +10,9 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.mixTestAll"
+        "onCommand:extension.mixTestAll",
+        "onCommand:extension.mixTestOne",
+        "onCommand:extension.mixTestFile"
     ],
     "main": "./out/extension",
     "contributes": {
@@ -18,6 +20,14 @@
             {
                 "command": "extension.mixTestAll",
                 "title": "Mix test all"
+            },
+            {
+                "command": "extension.mixTestOne",
+                "title": "Mix test at this line"
+            },
+            {
+                "command": "extension.mixTestFile",
+                "title": "Mix test this file"
             }
         ]
     },
